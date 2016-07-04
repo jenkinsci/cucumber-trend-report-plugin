@@ -7,9 +7,10 @@ table.stable-scenario {
     width: 85%;
 }
 
-.stable-scenario .header tr:first-child td {
+.stable-scenario tr:first-child td{
     background: darkgreen;
     color: #ffffff;
+    width: 100%;
 }
 
 table.unstable-scenario {
@@ -21,7 +22,7 @@ table.unstable-scenario {
     width: 85%;
 }
 
-.unstable-scenario .header tr:first-child td {
+.unstable-scenario tr:first-child td {
     background: darkred;
     color: #ffffff;
 }

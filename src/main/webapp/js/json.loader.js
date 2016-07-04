@@ -9,7 +9,7 @@ function renderCharts(result) {
     var scenarios = [];
     var stableScenarios = [];
     var unstableScenario = [];
-
+    loadBasicPage(result);
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             var temp = result;
@@ -40,7 +40,7 @@ function setConfig(arr, type, color) {
     var buildReport = arr;
 
     for (var build in buildReport) {
-        if(isNumeric(build)){
+        if (isNumeric(build)) {
             var buildData = buildReport[build];
             labels.push(buildData["buildNumber"]);
             var display;
@@ -117,9 +117,11 @@ function drawScenarioChart(jsonData) {
 
 function createStableScenarioOutput(data) {
     var table = document.getElementById("stable-scenario").getElementsByTagName("tbody")[0];
+    createTableHeader(table);
     for (var scenario in data) {
         if (scenario < 5) {
-            var row = table.insertRow(scenario);
+            console.log(scenario);
+            var row = table.insertRow(parseInt(scenario) + 1);
             var scenarioName = row.insertCell(0);
             var runTimes = row.insertCell(1);
             var failedRate = row.insertCell(2);
@@ -127,14 +129,25 @@ function createStableScenarioOutput(data) {
             runTimes.innerHTML = data[scenario]["executedTime"];
             failedRate.innerHTML = parseFloat(data[scenario]["failRate"] * 100).toFixed(2) + "%";
         }
-
     }
 }
+
+function createTableHeader(table) {
+    var header = table.insertRow(0);
+    var scenarioNameHeader = header.insertCell(0);
+    var executedTimeHeader = header.insertCell(1);
+    var failRateHeader = header.insertCell(2);
+    scenarioNameHeader.innerHTML = "Scenario Name";
+    executedTimeHeader.innerHTML = "Executed Times";
+    failRateHeader.innerHTML = "Failed Rate";
+}
+
 function createUnStableScenarioOutput(data) {
     var table = document.getElementById("unstable-scenario").getElementsByTagName("tbody")[0];
+    createTableHeader(table);
     for (var scenario in data) {
         if (scenario < 5 && data[scenario]["failRate"] > 0) {
-            var row = table.insertRow(scenario);
+            var row = table.insertRow(scenario + 1);
             var scenarioName = row.insertCell(0);
             var runTimes = row.insertCell(1);
             var failedRate = row.insertCell(2);
@@ -146,4 +159,91 @@ function createUnStableScenarioOutput(data) {
 }
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function loadBasicPage(data) {
+    if (data == null) {
+        messageForNoData();
+    } else {
+        createLayout();
+    }
+}
+
+function createLayout() {
+    var time = document.createElement("h3");
+    time.innerHTML = "Creation time";
+    var timeSpan = document.createElement("span");
+    timeSpan.id = "time-created";
+    time.appendChild(timeSpan);
+    document.getElementById("result").appendChild(time);
+    createTrendResultLayout();
+    createTrendDurationLayout();
+    createTrendScenarioLayout();
+    createTable("Top Stable Scenario", "stable-scenario", "stable-scenario");
+    createTable("Top Unstable Scenario", "unstable-scenario", "unstable-scenario");
+
+}
+
+function createTrendResultLayout() {
+    var title = document.createElement("h2");
+    title.innerHTML = "Test Result Trend";
+    var trendResult = document.createElement("div");
+    var trendResultCanvas = document.createElement("canvas");
+    trendResultCanvas.id = "results-trend";
+    trendResultCanvas.style = "width: 80%";
+    trendResultCanvas.className = "chart";
+    trendResult.appendChild(trendResultCanvas);
+    addToPage(title);
+    addToPage(trendResult);
+}
+
+function createTrendDurationLayout() {
+    var title = document.createElement("h2");
+    title.innerHTML = "Test Duration Trend";
+    var trendResult = document.createElement("div");
+    var trendResultCanvas = document.createElement("canvas");
+    trendResultCanvas.id = "duration-trend";
+    trendResultCanvas.style = "width: 80%";
+    trendResult.appendChild(trendResultCanvas);
+    addToPage(title);
+    addToPage(trendResult);
+}
+
+function createTrendScenarioLayout() {
+    var title = document.createElement("h2");
+    title.innerHTML = "Test Scenario Trend";
+    var trendResult = document.createElement("div");
+    var trendResultCanvas = document.createElement("canvas");
+    trendResultCanvas.id = "scenario-trend";
+    trendResultCanvas.style = "width: 80%";
+    trendResult.appendChild(trendResultCanvas);
+    addToPage(title);
+    addToPage(trendResult);
+}
+
+function createTable(titleText, id, clazz) {
+    var div = document.createElement("div");
+    var title = document.createElement("h2");
+    title.innerHTML = titleText;
+    div.appendChild(title);
+
+    var table = document.createElement("table");
+    table.id = id;
+    table.className = clazz;
+    var theader = document.createElement("theader");
+    var tbody = document.createElement("tbody");
+
+    table.appendChild(theader);
+    table.appendChild(tbody);
+    div.appendChild(table);
+    addToPage(div);
+}
+
+function messageForNoData() {
+    var textarea = document.createTextNode("No data available!");
+    addToPage(textarea);
+}
+
+function addToPage(param) {
+    document.getElementById("result").appendChild(param);
 }

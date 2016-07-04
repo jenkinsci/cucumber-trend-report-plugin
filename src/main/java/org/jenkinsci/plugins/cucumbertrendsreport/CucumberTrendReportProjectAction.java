@@ -53,5 +53,4 @@ public class CucumberTrendReportProjectAction extends CucumberTrendReportBaseAct
         return Common.getText(resultFile.toString());
 
     }
-
 }
