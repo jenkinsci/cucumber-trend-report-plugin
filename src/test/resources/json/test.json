@@ -1,0 +1,65 @@
+[
+    {
+        "keyword": "Feature",
+        "name": "Demonstration session #2",
+        "line": 1,
+        "description": "",
+        "id": "demonstration-session-#2",
+        "uri": "features/Cucumber-School/Login to Travel Business Partner.feature",
+        "elements": [
+            {
+                "keyword": "Scenario",
+                "name": "Login to the travel business partner page",
+                "line": 2,
+                "description": "",
+                "id": "demonstration-session-#2;login-to-the-travel-business-partner-page",
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "I open travel business partner page",
+                        "line": 3,
+                        "match": {
+                            "location": "features/Cucumber-School/step_definitions/cucumber-school-steps.rb:1"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 58742102000
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "I login as normal user",
+                        "line": 4,
+                        "match": {
+                            "arguments": [
+                                {
+                                    "offset": 11,
+                                    "val": "normal user"
+                                }
+                            ],
+                            "location": "features/Cucumber-School/step_definitions/cucumber-school-steps.rb:5"
+                        },
+                        "result": {
+                            "status": "failed",
+                            "error_message": "Unable to find xpath \"//*[@name=\\\"username\\\"]\" (Capybara::ElementNotFound)\n./opsm-cucumber/drivers/page_driver.rb:57:in `block (2 levels) in <class:PageDriver>'\n./opsm-cucumber/drivers/web_driver.rb:168:in `find_element'\n./opsm-cucumber/drivers/web_driver.rb:60:in `block in textarea'\n./opsm-cucumber/page_objects/landing_page.rb:20:in `login'\n./features/Cucumber-School/step_definitions/cucumber-school-steps.rb:8:in `/^I login as (.*)$/'\nfeatures/Cucumber-School/Login to Travel Business Partner.feature:4:in `And I login as normal user'",
+                            "duration": 10437139000
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I should login successfully",
+                        "line": 5,
+                        "match": {
+                            "location": "features/Cucumber-School/step_definitions/cucumber-school-steps.rb:11"
+                        },
+                        "result": {
+                            "status": "skipped",
+                            "duration": 563000
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

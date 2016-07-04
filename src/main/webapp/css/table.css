@@ -1,0 +1,32 @@
+table.stable-scenario {
+    border-collapse: collapse;
+    border: 1px solid #839E99;
+    background: #f1f8ee;
+    font: .9em/1.2em Georgia, "Times New Roman", Times, serif;
+    color: #033;
+    width: 85%;
+}
+
+.stable-scenario .header tr:first-child td {
+    background: darkgreen;
+    color: #ffffff;
+}
+
+table.unstable-scenario {
+    border-collapse: collapse;
+    border: 1px solid #839E99;
+    background: #ffcccc;
+    font: .9em/1.2em Georgia, "Times New Roman", Times, serif;
+    color: #033;
+    width: 85%;
+}
+
+.unstable-scenario .header tr:first-child td {
+    background: darkred;
+    color: #ffffff;
+}
+
+tr td {
+    padding: 5px;
+    border: 1px solid #000000;
+}
