@@ -19,9 +19,10 @@ import java.util.List;
  */
 public class TrendReportGeneration {
 
-    public void createJsonResults(String output, List<CucumberReports> allReports) {
+    public void createJsonResults(String output, List<CucumberReports> allReports, Double threshold) {
         Utils utils = new Utils();
         BuildReports jsonResult = generateTrendReport(allReports);
+        jsonResult.setThreshold(threshold);
         utils.createJsonFile(jsonResult, output);
     }
 
@@ -140,7 +141,7 @@ public class TrendReportGeneration {
     private Boolean isScenarioFailed(Element element) {
         List<Step> steps = element.getSteps();
         for (Step step : steps) {
-            if (step.getResult().getStatus().equalsIgnoreCase("failed")) return true;
+            if (step.getResult().getStatus().equalsIgnoreCase("failed")||step.getResult().getStatus().equalsIgnoreCase("skipped")) return true;
         }
         return false;
     }

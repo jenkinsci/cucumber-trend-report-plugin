@@ -31,3 +31,8 @@ tr td {
     padding: 5px;
     border: 1px solid #000000;
 }
+
+.no-border tr td {
+    padding: 5px;
+    border: none;
+}

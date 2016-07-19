@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.cucumbertrendsreport;
+package org.jenkinsci.plugins.cucumbertrendsreport.publish;
 
 import hudson.model.*;
 import org.jenkinsci.plugins.cucumbertrendsreport.utils.Common;
@@ -32,11 +32,11 @@ public class CucumberTrendReportProjectAction extends CucumberTrendReportBaseAct
     }
 
     private File getProjectArchiveDir() {
-        return new File(project.getRootDir(), CucumberTrendReportBaseAction.BASE_URL);
+        return new File(project.getRootDir(), BASE_URL);
     }
 
     private File getBuildArchiveDir(Run<?, ?> run) {
-        return new File(run.getRootDir(), CucumberTrendReportBaseAction.BASE_URL);
+        return new File(run.getRootDir(), BASE_URL);
     }
 
     @Override

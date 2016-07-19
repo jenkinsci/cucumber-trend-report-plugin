@@ -1,12 +1,11 @@
-package org.jenkinsci.plugins.cucumbertrendsreport;
+package org.jenkinsci.plugins.cucumbertrendsreport.publish;
 
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.model.*;
+import hudson.tasks.*;
 import hudson.util.FormValidation;
-import hudson.tasks.Builder;
-import hudson.tasks.BuildStepDescriptor;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.io.FileUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -18,14 +17,14 @@ import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 
-public class CucumberTrendReportBuilder extends Builder implements SimpleBuildStep {
+public class CucumberTrendReportBuilder extends Recorder {
 
     private final String unstableThreshold;
     private final String reportFolder;
     private final String jsonReportName;
 
     @DataBoundConstructor
-    public CucumberTrendReportBuilder(String unstableThreshold, String reportFolder,String jsonReportName) {
+    public CucumberTrendReportBuilder(String unstableThreshold, String reportFolder, String jsonReportName) {
         this.unstableThreshold = unstableThreshold;
         this.reportFolder = reportFolder;
         this.jsonReportName = jsonReportName;
@@ -39,35 +38,41 @@ public class CucumberTrendReportBuilder extends Builder implements SimpleBuildSt
         return reportFolder;
     }
 
-    public String getJsonReportName(){
+    public String getJsonReportName() {
         return jsonReportName;
     }
 
     @Override
-    public void perform(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws IOException {
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
         // This is where you 'build' the project.
-        String workplace = String.valueOf(workspace);
+        Double threshold;
+        if (getUnstableThreshold().contains("%")) {
+            threshold = Double.valueOf(getUnstableThreshold().replace("%", "")) / 100;
+        } else if (!getUnstableThreshold().isEmpty()) {
+            threshold = Double.valueOf(getUnstableThreshold());
+        } else {
+            threshold = 0.4;
+        }
+        String workplace = String.valueOf(build.getModuleRoot());
         File jobDirectory = new File(workplace).getParentFile();
         listener.getLogger().println(jobDirectory);
 
         File targetBuildDirectory = new File(build.getRootDir(), CucumberTrendReportBaseAction.BASE_URL);
         if (!targetBuildDirectory.exists()) {
-            if(!targetBuildDirectory.mkdirs()) return;
+            if (!targetBuildDirectory.mkdirs()) return false;
         }
         File targetFile = new File(targetBuildDirectory, "result.json");
 
         File buildPath = new File(jobDirectory, "builds");
 
-        File reportFolderInWorkspace =  new File(workplace,reportFolder);
+        File reportFolderInWorkspace = new File(workplace, reportFolder);
 
-        FileUtils.copyFile(new File(reportFolderInWorkspace,jsonReportName), new File(targetBuildDirectory,jsonReportName));
+        FileUtils.copyFile(new File(reportFolderInWorkspace, jsonReportName), new File(targetBuildDirectory, jsonReportName));
         ReportCollection reportCollection = new ReportCollection();
         reportCollection.initiate(buildPath.toString(), targetBuildDirectory.getName(), jsonReportName);
         TrendReportGeneration trendReportGeneration = new TrendReportGeneration();
-        trendReportGeneration.createJsonResults(targetFile.toString(), reportCollection.getReports());
-
-        build.addAction(new CucumberTrendReportBuildAction(build));
-
+        trendReportGeneration.createJsonResults(targetFile.toString(), reportCollection.getReports(), threshold);
+        return true;
     }
 
     @Override
@@ -76,12 +81,17 @@ public class CucumberTrendReportBuilder extends Builder implements SimpleBuildSt
     }
 
     @Override
+    public BuildStepMonitor getRequiredMonitorService() {
+        return BuildStepMonitor.NONE;
+    }
+
+    @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
     }
 
     @Extension
-    public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+    public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public DescriptorImpl() {
             load();
         }
@@ -126,4 +136,3 @@ public class CucumberTrendReportBuilder extends Builder implements SimpleBuildSt
         }
     }
 }
-

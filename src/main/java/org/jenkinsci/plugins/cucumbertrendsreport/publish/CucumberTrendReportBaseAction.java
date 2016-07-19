@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.cucumbertrendsreport;
+package org.jenkinsci.plugins.cucumbertrendsreport.publish;
 
 import hudson.model.Action;
 import hudson.util.HttpResponses;
@@ -30,16 +30,8 @@ public abstract class CucumberTrendReportBaseAction implements Action {
         return "/plugin/cucumber-trends-report/icon.png";
     }
 
-    @RequirePOST
-    public HttpResponse doTest(Stapler req){
-        System.out.print("doTest");
-        return HttpResponses.redirectTo(".");
-    }
-
     protected abstract String getTitle();
 
     protected abstract File dir();
-
-
 
 }

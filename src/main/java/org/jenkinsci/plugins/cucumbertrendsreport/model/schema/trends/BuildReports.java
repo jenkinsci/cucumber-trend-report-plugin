@@ -10,6 +10,7 @@ import java.util.List;
 public class BuildReports {
     private String reportName;
     private String reportTime;
+    private Double threshold;
     private List<BuildReport> buildReports;
     private List<Scenario> scenarios;
     private List<UnstableScenarios> unstableScenarios;
@@ -61,5 +62,13 @@ public class BuildReports {
 
     public void setStableScenarios(List<StableScenarios> stableScenarios) {
         this.stableScenarios = stableScenarios;
+    }
+
+    public Double getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(Double threshold) {
+        this.threshold = threshold;
     }
 }

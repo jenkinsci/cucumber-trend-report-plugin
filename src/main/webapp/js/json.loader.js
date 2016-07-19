@@ -2,6 +2,8 @@
  * Created by Thanh Q. Le on 21/06/16.
  */
 
+var threshold;
+
 function renderCharts(result) {
     var xmlhttp = new XMLHttpRequest();
     var url = '.';
@@ -13,6 +15,7 @@ function renderCharts(result) {
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             var temp = result;
+            threshold = result["threshold"];
             document.getElementById("time-created").innerHTML = temp["reportTime"];
             buildStatistics = temp["buildReports"];
             scenarios = temp["scenarios"];
@@ -25,7 +28,6 @@ function renderCharts(result) {
             drawResultChart(buildStatistics);
             drawDurationChart(buildStatistics);
             drawScenarioChart(buildStatistics);
-
             createStableScenarioOutput(stableScenarios);
             createUnStableScenarioOutput(unstableScenario);
         }
@@ -45,8 +47,8 @@ function setConfig(arr, type, color) {
             labels.push(buildData["buildNumber"]);
             var display;
             if (type == "duration") {
-                data.push(buildData["buildTime"]);
-                display = "Test Duration (in second)";
+                data.push((buildData["buildTime"]/60).toFixed(3));
+                display = "Test Duration (in minutes)";
             }
             if (type == "result") {
                 data.push(buildData["failRate"] * 100);
@@ -72,6 +74,7 @@ function setConfig(arr, type, color) {
         },
         options: {
             responsive: true,
+            tension:0,
             scales: {
                 xAxes: [
                     {
@@ -119,9 +122,9 @@ function createStableScenarioOutput(data) {
     var table = document.getElementById("stable-scenario").getElementsByTagName("tbody")[0];
     createTableHeader(table);
     for (var scenario in data) {
-        if (scenario < 5) {
-            console.log(scenario);
-            var row = table.insertRow(parseInt(scenario) + 1);
+        if (data[scenario]["failRate"] < threshold) {
+            var lastRow = table.rows.length;
+            var row = table.insertRow(lastRow);
             var scenarioName = row.insertCell(0);
             var runTimes = row.insertCell(1);
             var failedRate = row.insertCell(2);
@@ -146,8 +149,9 @@ function createUnStableScenarioOutput(data) {
     var table = document.getElementById("unstable-scenario").getElementsByTagName("tbody")[0];
     createTableHeader(table);
     for (var scenario in data) {
-        if (scenario < 5 && data[scenario]["failRate"] > 0) {
-            var row = table.insertRow(scenario + 1);
+        if (data[scenario]["failRate"] >= threshold) {
+            var lastRow = table.rows.length;
+            var row = table.insertRow(lastRow);
             var scenarioName = row.insertCell(0);
             var runTimes = row.insertCell(1);
             var failedRate = row.insertCell(2);
